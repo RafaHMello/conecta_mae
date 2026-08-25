@@ -101,6 +101,29 @@ em{font-style:normal;color:var(--pink-dk);font-weight:600}
 .foto{border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
 .dep{border-radius:var(--r);overflow:hidden;background:#171319}
 .dep img{width:100%}
+
+/* Depoimento em vídeo (YouTube Shorts).
+   Fachada: capa + botão, e o iframe só entra no clique. Dois embeds carregando
+   de saída trariam quase 1MB de script do YouTube numa página cuja primeira
+   tarefa é tocar a VSL. E ninguém é entregue ao YouTube antes de escolher ver. */
+.dep-videos{display:grid;gap:16px}
+@media(min-width:768px){.dep-videos{grid-template-columns:1fr 1fr;gap:20px}}
+.dep-video{border-radius:var(--r);overflow:hidden;background:#171319;box-shadow:var(--shadow)}
+.dep-video .quadro{position:relative;display:block;width:100%;aspect-ratio:9/16;
+  padding:0;border:0;background:#171319;cursor:pointer}
+.dep-video .quadro img{width:100%;height:100%;object-fit:cover;display:block}
+/* A capa de Short vem 16:9: o quadro vertical no centro, sobre o mesmo frame
+   borrado nas laterais. Esse centro ocupa 32% da largura — exatamente a fatia
+   que o cover mostra num container 9:16. O recorte devolve o vídeo original. */
+.dep-video .quadro::after{content:"";position:absolute;inset:0;background:rgba(11,10,13,.26)}
+.dep-video .quadro:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.dep-video .toque{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:62px;height:62px;border-radius:50%;background:var(--pink);color:#fff;
+  display:grid;place-items:center;font-size:1.3rem;padding-left:5px;
+  box-shadow:0 10px 26px -8px rgba(233,30,99,.9)}
+.dep-video iframe{display:block;width:100%;aspect-ratio:9/16;border:0}
+.dep-video .nome{padding:12px 14px;font-size:.9rem;font-weight:700;color:#F0E6EC}
+.dep-video .nome small{display:block;margin-top:2px;font-size:.76rem;font-weight:500;color:#BFB2B9}
 .carousel{position:relative;margin-top:22px}
 .track{display:grid;grid-auto-flow:column;grid-auto-columns:78%;gap:14px;overflow-x:auto;
        scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:8px;
@@ -483,7 +506,26 @@ footer a{color:#E8D7E0}
     </div>
 
     <div class="narrow" style="margin-top:26px;padding-inline:0">
-      <div class="mk-block">[INSERIR DEPOIMENTOS DE QUEM RECEBEU O PERFIL PRONTO — o serviço é novo, então vale separar: o que é depoimento do método e o que é de quem já recebeu a entrega feita por você.]</div>
+      <div class="dep-videos">
+        <div class="dep-video">
+          <button class="quadro" type="button" data-yt="oicKGws_4hQ" aria-label="Assistir ao depoimento de Amanda Mol">
+            <img src="https://i.ytimg.com/vi/oicKGws_4hQ/maxresdefault.jpg" alt="" loading="lazy"
+                 width="1280" height="720"
+                 onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/oicKGws_4hQ/hqdefault.jpg'">
+            <span class="toque" aria-hidden="true">▶</span>
+          </button>
+          <p class="nome">Amanda Mol<small>Depoimento em vídeo</small></p>
+        </div>
+        <div class="dep-video">
+          <button class="quadro" type="button" data-yt="jmiZn7IFdVE" aria-label="Assistir ao depoimento de Nina Standerski">
+            <img src="https://i.ytimg.com/vi/jmiZn7IFdVE/maxresdefault.jpg" alt="" loading="lazy"
+                 width="1280" height="720"
+                 onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/jmiZn7IFdVE/hqdefault.jpg'">
+            <span class="toque" aria-hidden="true">▶</span>
+          </button>
+          <p class="nome">Nina Standerski<small>Depoimento em vídeo</small></p>
+        </div>
+      </div>
     </div>
 
     <p class="disclaimer center">Os depoimentos acima são relatos espontâneos e experiências individuais. Os resultados variam de acordo com a área de atuação, o momento do perfil e a dedicação de cada pessoa na aplicação do método. Este serviço não garante resultados financeiros nem qualquer retorno específico.</p>
@@ -838,6 +880,22 @@ var VSL = {
   window.addEventListener('scroll', atualizaFlutuante, { passive: true });
   window.addEventListener('resize', atualizaFlutuante);
   atualizaFlutuante();
+
+  /* Depoimento em vídeo: a capa vira iframe no clique.
+     youtube-nocookie e autoplay=1 porque quem clicou já pediu para ver. */
+  document.querySelectorAll('.dep-video .quadro').forEach(function (botao) {
+    botao.addEventListener('click', function () {
+      var quadro = document.createElement('iframe');
+      quadro.src =
+        'https://www.youtube-nocookie.com/embed/' + botao.dataset.yt +
+        '?autoplay=1&rel=0&playsinline=1';
+      quadro.title = botao.getAttribute('aria-label') || 'Depoimento em vídeo';
+      quadro.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      quadro.allowFullscreen = true;
+      botao.replaceWith(quadro);
+    });
+  });
 })();
 </script>
 </body>
