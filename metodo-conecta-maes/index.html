@@ -67,7 +67,7 @@ em{font-style:normal;color:var(--pink-dk);font-weight:600}
 
 .topbar{background:var(--night);border-bottom:1px solid #241F27;padding:10px 0;position:sticky;top:0;z-index:40}
 .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.topbar img{width:120px}
+.topbar img{height:42px;width:auto;display:block}
 .btn-sm{display:inline-block;background:var(--pink);color:#fff;text-decoration:none;font-weight:700;
         font-size:.78rem;padding:10px 18px;border-radius:999px;white-space:nowrap;font-family:'Inter',sans-serif}
 
@@ -186,7 +186,7 @@ details p{margin-top:10px;color:var(--muted);font-size:.93rem}
 .float .btn{padding:15px 20px;font-size:.96rem}
 
 footer{background:var(--night);color:#BFB2B9;padding:42px 0 30px;font-size:.84rem;text-align:center}
-footer img{width:150px;margin:0 auto 18px}
+footer img{width:190px;height:auto;margin:0 auto 18px}
 footer a{color:#E8D7E0}
 .legal{border-top:1px solid #2E2833;padding-top:18px;margin-top:20px;font-size:.75rem;color:#9A8E96;line-height:1.65}
 
@@ -205,7 +205,7 @@ footer a{color:#E8D7E0}
   .track{grid-auto-columns:32%}
   .price{font-size:2.5rem}
   .offer{padding:36px 32px}
-  .topbar img{width:150px}
+  .topbar img{height:52px}
   .float{display:none}
 }
 </style>
@@ -214,9 +214,10 @@ footer a{color:#E8D7E0}
 
 <header class="topbar">
   <div class="wrap">
-    <!-- LOGO: trocar pelo arquivo quando ele estiver em assets/.
-         <img src="assets/logo-rosa-preto.png" alt="PERFIL PRONTO — Método Conecta Mães"> -->
-    <span class="mk">[LOGO PERFIL PRONTO — versão rosa sobre preto]</span>
+    <a href="#" aria-label="PERFIL PRONTO — Método Conecta Mães">
+      <img src="assets/logo-topo.png" alt="PERFIL PRONTO — Método Conecta Mães"
+           width="600" height="354" loading="eager">
+    </a>
     <a href="#oferta" class="btn-sm">QUERO MEU PERFIL PRONTO</a>
   </div>
 </header>
@@ -438,7 +439,7 @@ footer a{color:#E8D7E0}
       <div class="step">
         <div class="step-n">3</div>
         <div>
-          <h3>Envia suas fotos</h3>
+          <h3>Envia suas fotos e a sua paleta de cores</h3>
           <p class="lead" style="margin-top:5px;font-size:.95rem">Para os posts saírem com o seu rosto e a sua cara, não com banco de imagens.</p>
         </div>
       </div>
@@ -572,7 +573,30 @@ footer a{color:#E8D7E0}
       <span class="eyebrow">E ainda</span>
       <h2>Bônus</h2>
     </div>
-    <div class="mk-block" style="margin-top:22px">[DEFINIR OS BÔNUS DO PERFIL PRONTO — o texto que você mandou não cita nenhum. Se algum bônus do curso (Turbinar, ManyChat, Canva simplificado) entrar junto, me diga e eu monto os cards. Valores individuais só se forem reais.]</div>
+    <p class="lead center" style="margin-top:12px">Junto com o método, vêm quatro materiais que resolvem o que trava a maioria depois que o perfil fica pronto.</p>
+
+    <div class="stack stack-2" style="margin-top:24px">
+      <div class="card">
+        <div class="ent-ico">🚀</div>
+        <h3>Aulão do botão Turbinar</h3>
+        <p class="lead" style="margin-top:8px;font-size:.94rem">Como turbinar sem queimar dinheiro — o que vale a pena impulsionar e o que não vale, para o público de mães.</p>
+      </div>
+      <div class="card">
+        <div class="ent-ico">💬</div>
+        <h3>ManyChat</h3>
+        <p class="lead" style="margin-top:8px;font-size:.94rem">Como automatizar suas mensagens no direct, para não perder a mãe que chamou às onze da noite.</p>
+      </div>
+      <div class="card">
+        <div class="ent-ico">🎨</div>
+        <h3>Pack de Canva</h3>
+        <p class="lead" style="margin-top:8px;font-size:.94rem">Modelos prontos, para você não precisar quebrar a cabeça pensando em design a cada post.</p>
+      </div>
+      <div class="card">
+        <div class="ent-ico">🤝</div>
+        <h3>Duas aulas de relacionamento</h3>
+        <p class="lead" style="margin-top:8px;font-size:.94rem">Como gerar conversa com as mães ao final de cada post — porque post sem resposta não vira cliente.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -611,8 +635,8 @@ footer a{color:#E8D7E0}
       <p class="btn-note"><span class="mk">[FORMAS DE PAGAMENTO: PREENCHER]</span></p>
 
       <div class="btn-wrap">
-        <a href="#" class="btn">QUERO MEU PERFIL PRONTO</a>
-        <p class="btn-note">🔒 Compra segura<br><span class="mk">[INSERIR LINK DE CHECKOUT HOTMART]</span></p>
+        <a href="https://pay.hotmart.com/P107117510G" class="btn">QUERO MEU PERFIL PRONTO</a>
+        <p class="btn-note">🔒 Compra segura · Checkout Hotmart</p>
       </div>
     </div>
 
@@ -744,8 +768,8 @@ footer a{color:#E8D7E0}
         <p class="lead" style="margin-top:12px"><b style="color:var(--ink)">Próximo passo:</b> clique no botão, finalize a compra e você recebe o formulário para começarmos.</p>
 
         <div class="btn-wrap" style="text-align:left">
-          <a href="#" class="btn">QUERO MEU PERFIL PRONTO</a>
-          <p class="btn-note" style="text-align:left"><span class="mk">[INSERIR LINK DE CHECKOUT HOTMART]</span></p>
+          <a href="https://pay.hotmart.com/P107117510G" class="btn">QUERO MEU PERFIL PRONTO</a>
+          <p class="btn-note" style="text-align:left">🔒 Compra segura · Checkout Hotmart</p>
         </div>
 
         <p class="lead" style="margin-top:20px;font-family:Fraunces,serif;font-size:1.05rem;color:var(--ink)">
@@ -761,8 +785,8 @@ footer a{color:#E8D7E0}
      ============================================================ -->
 <footer>
   <div class="narrow">
-    <!-- LOGO RODAPÉ: <img src="assets/logo-ouro-preto.png" alt="PERFIL PRONTO — Método Conecta Mães"> -->
-    <p style="margin-bottom:18px"><span class="mk">[LOGO PERFIL PRONTO — versão ouro sobre preto]</span></p>
+    <img src="assets/logo-rodape.png" alt="PERFIL PRONTO — Método Conecta Mães"
+         width="600" height="442" loading="lazy">
 
     <p style="max-width:70ch;margin:0 auto 16px;font-size:.79rem;line-height:1.6">Este produto é comercializado com o apoio da plataforma Hotmart. A plataforma não faz controle editorial prévio dos produtos comercializados, nem avalia a tecnicidade e experiência daqueles que os produzem. A existência de um produto e sua aquisição, por meio da plataforma, não podem ser consideradas como garantia de qualidade de conteúdo e resultado, em qualquer hipótese.</p>
 
