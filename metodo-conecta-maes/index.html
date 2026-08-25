@@ -772,6 +772,42 @@ var VSL = {
   var rodape   = document.querySelector('footer');
   var revelado = false;
 
+  /* Contagem da oferta: uma hora a partir do momento em que a pagina se abre,
+     nao de quando ela carrega. Quem ainda esta assistindo a VSL nao gasta
+     prazo.
+
+     Fica aqui em cima, e nao junto do resto do script, porque revelar() chama
+     iniciaContagem() e pode rodar ja na inicializacao, quando a sessao lembra
+     que a pagina ja tinha sido liberada.
+
+     O inicio fica na sessao: um F5 no meio nao devolve uma hora inteira a quem
+     ja usou quarenta minutos. Zerou, o aviso some -- em vez de voltar a 59:59 e
+     anunciar um prazo que nao existe. */
+  var JANELA_MIN = 60;
+
+  function iniciaContagem() {
+    var caixa = document.getElementById('avisoOferta');
+    var alvo = document.getElementById('avisoConta');
+    if (!caixa || !alvo) return;
+
+    var inicio = 0;
+    try { inicio = parseInt(sessionStorage.getItem('oferta_inicio'), 10) || 0; } catch (e) {}
+    if (!inicio) {
+      inicio = Date.now();
+      try { sessionStorage.setItem('oferta_inicio', String(inicio)); } catch (e) {}
+    }
+    var fim = inicio + JANELA_MIN * 60000;
+    if (!isFinite(fim)) return;
+
+    function tique() {
+      var s = Math.floor((fim - Date.now()) / 1000);
+      if (s <= 0) { caixa.classList.add('oculto'); clearInterval(t); return; }
+      alvo.textContent = Math.floor(s / 60) + 'min ' + String(s % 60).padStart(2, '0') + 's';
+    }
+    tique();
+    var t = setInterval(tique, 1000);
+  }
+
   function revelar() {
     if (revelado) return;
     revelado = true;
@@ -847,37 +883,6 @@ var VSL = {
   window.addEventListener('scroll', atualizaFlutuante, { passive: true });
   window.addEventListener('resize', atualizaFlutuante);
   atualizaFlutuante();
-
-  /* Contagem da oferta: uma hora a partir do momento em que a pagina se abre,
-     nao de quando ela carrega. Quem ainda esta assistindo a VSL nao gasta
-     prazo.
-
-     O inicio fica na sessao: um F5 no meio nao devolve uma hora inteira a quem
-     ja usou quarenta minutos. Zerou, o aviso some -- em vez de voltar a 59:59 e
-     anunciar um prazo que nao existe. */
-  var JANELA_MIN = 60;
-
-  function iniciaContagem() {
-    var caixa = document.getElementById('avisoOferta');
-    var alvo = document.getElementById('avisoConta');
-    if (!caixa || !alvo) return;
-
-    var inicio = 0;
-    try { inicio = parseInt(sessionStorage.getItem('oferta_inicio'), 10) || 0; } catch (e) {}
-    if (!inicio) {
-      inicio = Date.now();
-      try { sessionStorage.setItem('oferta_inicio', String(inicio)); } catch (e) {}
-    }
-    var fim = inicio + JANELA_MIN * 60000;
-
-    function tique() {
-      var s = Math.floor((fim - Date.now()) / 1000);
-      if (s <= 0) { caixa.classList.add('oculto'); clearInterval(t); return; }
-      alvo.textContent = Math.floor(s / 60) + 'min ' + String(s % 60).padStart(2, '0') + 's';
-    }
-    tique();
-    var t = setInterval(tique, 1000);
-  }
 
   /* Depoimento em vídeo: a capa vira iframe no clique.
      youtube-nocookie e autoplay=1 porque quem clicou já pediu para ver. */
