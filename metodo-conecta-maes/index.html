@@ -228,9 +228,9 @@ footer a{color:#E8D7E0}
 <section class="hero" style="padding-top:30px">
   <div class="narrow center">
 
-    <div class="alert">
-      <span>⚠️</span>
-      <span class="mk">[INSERIR AVISO DE DISPONIBILIDADE REAL — ex.: nº de perfis que você consegue entregar por mês, ou data limite de inscrição. Como você atende uma a uma, esse limite é verdadeiro.]</span>
+    <div class="alert" id="avisoOferta" hidden>
+      <span aria-hidden="true">⏳</span>
+      <span>Condições desta página <strong>até <span id="avisoAte"></span></strong> — restam <strong id="avisoConta"></strong>.</span>
     </div>
 
     <h1>Eu monto o seu perfil para transformar uma visita em venda, de verdade.</h1>
@@ -447,14 +447,14 @@ footer a{color:#E8D7E0}
         <div class="step-n">4</div>
         <div>
           <h3>Participa de uma reunião individual comigo</h3>
-          <p class="lead" style="margin-top:5px;font-size:.95rem">Uma conversa de <strong>1 hora</strong>, só sua, para eu entender o que o formulário não conta. <span class="mk">[CONFIRMAR: como é agendada]</span></p>
+          <p class="lead" style="margin-top:5px;font-size:.95rem">Uma conversa de <strong>1 hora</strong>, só sua, para eu entender o que o formulário não conta.</p>
         </div>
       </div>
       <div class="step">
         <div class="step-n">5</div>
         <div>
           <h3>Eu construo o seu PERFIL PRONTO e entrego em 10 dias úteis</h3>
-          <p class="lead" style="margin-top:5px;font-size:.95rem">Você recebe tudo pronto para publicar. <span class="mk">[CONFIRMAR: os 10 dias úteis contam da compra ou do envio das suas informações? · formato da entrega (Drive, PDF, Canva?) · se há rodada de ajustes]</span></p>
+          <p class="lead" style="margin-top:5px;font-size:.95rem">Você recebe tudo pronto para publicar.</p>
         </div>
       </div>
     </div>
@@ -845,6 +845,39 @@ var VSL = {
   window.addEventListener('scroll', atualizaFlutuante, { passive: true });
   window.addEventListener('resize', atualizaFlutuante);
   atualizaFlutuante();
+
+  /* Aviso de prazo da oferta.
+     OFERTA_ATE e uma data real. Quando ela passa, o aviso some sozinho em vez
+     de recomecar: contador que reinicia a cada visita anuncia um prazo que nao
+     existe, e quem volta no dia seguinte e ve as mesmas horas descobre. Para
+     estender a oferta, mude esta linha. */
+  var OFERTA_ATE = '2026-08-25T23:59:59-03:00';
+
+  (function () {
+    var caixa = document.getElementById('avisoOferta');
+    if (!caixa) return;
+    var fim = new Date(OFERTA_ATE).getTime();
+    if (isNaN(fim)) return;
+
+    var d = new Date(fim);
+    var dd = String(d.getDate()).padStart(2, '0');
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mi = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('avisoAte').textContent = dd + '/' + mm + ' às ' + hh + 'h' + mi;
+
+    var alvo = document.getElementById('avisoConta');
+    function tique() {
+      var falta = fim - Date.now();
+      if (falta <= 0) { caixa.hidden = true; clearInterval(t); return; }
+      var s = Math.floor(falta / 1000);
+      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+      alvo.textContent = h > 0 ? h + 'h ' + m + 'min' : m + 'min ' + (s % 60) + 's';
+      caixa.hidden = false;
+    }
+    tique();
+    var t = setInterval(tique, 1000);
+  })();
 
   /* Depoimento em vídeo: a capa vira iframe no clique.
      youtube-nocookie e autoplay=1 porque quem clicou já pediu para ver. */
