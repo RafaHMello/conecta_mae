@@ -228,9 +228,9 @@ footer a{color:#E8D7E0}
 <section class="hero" style="padding-top:30px">
   <div class="narrow center">
 
-    <div class="alert" id="avisoOferta" hidden>
+    <div class="alert oculto" id="avisoOferta">
       <span aria-hidden="true">⏳</span>
-      <span>Condições desta página <strong>até <span id="avisoAte"></span></strong> — restam <strong id="avisoConta"></strong>.</span>
+      <span>Estas condições valem por mais <strong id="avisoConta"></strong>.</span>
     </div>
 
     <h1>Eu monto o seu perfil para transformar uma visita em venda, de verdade.</h1>
@@ -764,6 +764,7 @@ var VSL = {
 
 (function () {
   var conteudo = document.getElementById('conteudo');
+  var aviso    = document.getElementById('avisoOferta');
   var ctaHero  = document.getElementById('ctaHero');
   var bullets  = document.getElementById('bulletsHero');
   var flutua   = document.getElementById('floatCta');
@@ -774,11 +775,12 @@ var VSL = {
   function revelar() {
     if (revelado) return;
     revelado = true;
-    [conteudo, ctaHero, bullets].forEach(function (el) {
+    [conteudo, aviso, ctaHero, bullets].forEach(function (el) {
       if (!el) return;
       el.classList.remove('oculto');
       el.classList.add('revelado');
     });
+    iniciaContagem();
     if (VSL.LEMBRAR_NA_SESSAO) {
       try { sessionStorage.setItem('vsl_revelada', '1'); } catch (e) {}
     }
@@ -846,38 +848,36 @@ var VSL = {
   window.addEventListener('resize', atualizaFlutuante);
   atualizaFlutuante();
 
-  /* Aviso de prazo da oferta.
-     OFERTA_ATE e uma data real. Quando ela passa, o aviso some sozinho em vez
-     de recomecar: contador que reinicia a cada visita anuncia um prazo que nao
-     existe, e quem volta no dia seguinte e ve as mesmas horas descobre. Para
-     estender a oferta, mude esta linha. */
-  var OFERTA_ATE = '2026-08-25T23:59:59-03:00';
+  /* Contagem da oferta: uma hora a partir do momento em que a pagina se abre,
+     nao de quando ela carrega. Quem ainda esta assistindo a VSL nao gasta
+     prazo.
 
-  (function () {
+     O inicio fica na sessao: um F5 no meio nao devolve uma hora inteira a quem
+     ja usou quarenta minutos. Zerou, o aviso some -- em vez de voltar a 59:59 e
+     anunciar um prazo que nao existe. */
+  var JANELA_MIN = 60;
+
+  function iniciaContagem() {
     var caixa = document.getElementById('avisoOferta');
-    if (!caixa) return;
-    var fim = new Date(OFERTA_ATE).getTime();
-    if (isNaN(fim)) return;
-
-    var d = new Date(fim);
-    var dd = String(d.getDate()).padStart(2, '0');
-    var mm = String(d.getMonth() + 1).padStart(2, '0');
-    var hh = String(d.getHours()).padStart(2, '0');
-    var mi = String(d.getMinutes()).padStart(2, '0');
-    document.getElementById('avisoAte').textContent = dd + '/' + mm + ' às ' + hh + 'h' + mi;
-
     var alvo = document.getElementById('avisoConta');
+    if (!caixa || !alvo) return;
+
+    var inicio = 0;
+    try { inicio = parseInt(sessionStorage.getItem('oferta_inicio'), 10) || 0; } catch (e) {}
+    if (!inicio) {
+      inicio = Date.now();
+      try { sessionStorage.setItem('oferta_inicio', String(inicio)); } catch (e) {}
+    }
+    var fim = inicio + JANELA_MIN * 60000;
+
     function tique() {
-      var falta = fim - Date.now();
-      if (falta <= 0) { caixa.hidden = true; clearInterval(t); return; }
-      var s = Math.floor(falta / 1000);
-      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
-      alvo.textContent = h > 0 ? h + 'h ' + m + 'min' : m + 'min ' + (s % 60) + 's';
-      caixa.hidden = false;
+      var s = Math.floor((fim - Date.now()) / 1000);
+      if (s <= 0) { caixa.classList.add('oculto'); clearInterval(t); return; }
+      alvo.textContent = Math.floor(s / 60) + 'min ' + String(s % 60).padStart(2, '0') + 's';
     }
     tique();
     var t = setInterval(tique, 1000);
-  })();
+  }
 
   /* Depoimento em vídeo: a capa vira iframe no clique.
      youtube-nocookie e autoplay=1 porque quem clicou já pediu para ver. */
