@@ -168,6 +168,18 @@ details p{margin-top:10px;color:var(--muted);font-size:.93rem}
 .player{position:relative;border-radius:var(--r);overflow:hidden;background:#221C24;
         aspect-ratio:16/9;box-shadow:var(--shadow)}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Aviso de som por cima do vídeo mudo. Cobre o quadro inteiro: é ele que recebe
+   o toque, não o player do YouTube. Some quando o som liga. */
+.vsl-som{position:absolute;inset:0;z-index:2;display:grid;place-items:center;cursor:pointer;
+         background:linear-gradient(to bottom,rgba(11,10,13,.15),rgba(11,10,13,.55))}
+.vsl-som:focus-visible{outline:3px solid var(--pink);outline-offset:-3px}
+.vsl-som-pill{display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:999px;
+              background:var(--pink);color:#fff;font-weight:700;font-size:.9rem;line-height:1.25;
+              box-shadow:0 10px 26px -8px rgba(233,30,99,.9);animation:vslPulsa 1.6s ease-in-out infinite}
+.vsl-som-pill strong{font-size:1rem}
+.vsl-som-ico{font-size:1.5rem}
+@keyframes vslPulsa{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.vsl-som-pill{animation:none}}
 
 .float{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px 16px calc(10px + env(safe-area-inset-bottom));
        background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--line);
@@ -230,10 +242,17 @@ footer a{color:#E8D7E0}
     </p>
 
     <div style="margin-top:24px">
-      <!-- VSL (YouTube). A página libera em VSL.REVELAR_EM segundos de vídeo
-           assistido — a lógica está no script do fim da página. -->
+      <!-- VSL (YouTube). Começa sozinha, muda; o toque no aviso liga o som e
+           volta pro início. A página libera em VSL.REVELAR_EM segundos de
+           vídeo COM SOM — a lógica está no script do fim da página. -->
       <div class="player" id="player">
         <div id="vslYt"></div>
+        <div class="vsl-som" id="vslSom" role="button" tabindex="0" aria-label="Ativar o som do vídeo">
+          <div class="vsl-som-pill">
+            <span class="vsl-som-ico">🔇</span>
+            <span>Seu vídeo já começou<br><strong>Toque para ouvir</strong></span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -815,32 +834,67 @@ var VSL = {
 
   /* VSL no YouTube (IFrame API). O script da API entra por aqui, e não no
      <head>, porque só ele sabe em que segundo o vídeo está — e é isso que
-     libera a página. Sem autoplay: navegador bloqueia som automático, e VSL
-     muda não serve. Quem quer ver, aperta o play. */
+     libera a página.
+
+     Autoplay: navegador nenhum deixa começar com som. Então o vídeo começa
+     sozinho MUDO, com um aviso por cima; o toque no aviso volta pro início
+     com som (padrão VTurb/Panda). A contagem para liberar a oferta só vale
+     com som ligado — mudo rodando no fundo não é ninguém assistindo. */
   var VIDEO_ID = 'kwNY_EZWFiU';
   var yt = null, vigia = null;
+  var avisoSom = document.getElementById('vslSom');
+
+  function somLigado() {
+    try { return !yt.isMuted(); } catch (e) { return false; }
+  }
 
   function vigiaTempo() {
     if (vigia) return;
     vigia = setInterval(function () {
       if (revelado) { clearInterval(vigia); vigia = null; return; }
+      if (!somLigado()) return;
+      /* Ligou o som pelo controle do próprio YouTube, sem passar pelo aviso. */
+      if (avisoSom) avisoSom.classList.add('oculto');
       var seg = 0;
       try { seg = yt.getCurrentTime() || 0; } catch (e) {}
       if (seg >= VSL.REVELAR_EM) revelar();
     }, 500);
   }
 
+  function ligarSom() {
+    if (!yt) return;
+    try {
+      yt.unMute();
+      yt.seekTo(0, true);
+      yt.playVideo();
+    } catch (e) {}
+    if (avisoSom) avisoSom.classList.add('oculto');
+    vigiaTempo();
+  }
+
+  if (avisoSom) {
+    avisoSom.addEventListener('click', ligarSom);
+    avisoSom.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); ligarSom(); }
+    });
+  }
+
   window.onYouTubeIframeAPIReady = function () {
     yt = new YT.Player('vslYt', {
       host: 'https://www.youtube-nocookie.com',
       videoId: VIDEO_ID,
-      playerVars: { rel: 0, playsinline: 1, modestbranding: 1 },
+      playerVars: { autoplay: 1, mute: 1, rel: 0, playsinline: 1, modestbranding: 1 },
       events: {
+        onReady: function (e) {
+          /* mute() de novo por garantia: sem isso o iOS pode ignorar o autoplay. */
+          e.target.mute();
+          e.target.playVideo();
+        },
         onStateChange: function (e) {
           if (e.data === YT.PlayerState.PLAYING) vigiaTempo();
           /* Acabou antes do segundo do pitch (REVELAR_EM maior que o vídeo):
              libera mesmo assim, senão a oferta nunca aparece. */
-          if (e.data === YT.PlayerState.ENDED) revelar();
+          if (e.data === YT.PlayerState.ENDED && somLigado()) revelar();
         }
       }
     });
