@@ -165,19 +165,9 @@ details p{margin-top:10px;color:var(--muted);font-size:.93rem}
 @keyframes surge{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.revelado{animation:none}}
 
-.player{position:relative;border-radius:var(--r);overflow:hidden;background:#221C24;cursor:pointer;
-        aspect-ratio:16/9;display:grid;place-items:center;text-align:center;
-        border:2px dashed #E0B9CC;user-select:none}
-.player:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
-.player-ico{width:62px;height:62px;border-radius:50%;background:var(--pink);color:#fff;
-            display:grid;place-items:center;font-size:1.4rem;margin:0 auto 12px;
-            box-shadow:0 10px 26px -10px rgba(233,30,99,.9);padding-left:4px}
-.player.rodando .player-ico{padding-left:0;font-size:1.1rem}
-.player-txt{color:#C9AEBB;font-size:.74rem;font-weight:700;letter-spacing:.05em;padding:0 18px;line-height:1.5}
-.player-timer{color:#fff;font-weight:700;font-size:.9rem;margin-top:10px}
-.player-aviso{color:#8E7A85;font-size:.7rem;margin-top:4px}
-.player-barra{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.16)}
-.player-progresso{height:100%;width:0;background:var(--pink);transition:width .25s linear}
+.player{position:relative;border-radius:var(--r);overflow:hidden;background:#221C24;
+        aspect-ratio:16/9;box-shadow:var(--shadow)}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
 .float{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px 16px calc(10px + env(safe-area-inset-bottom));
        background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--line);
@@ -240,16 +230,10 @@ footer a{color:#E8D7E0}
     </p>
 
     <div style="margin-top:24px">
-      <!-- PLAYER FALSO — substituir pelo embed real da VSL.
-           Ao trocar, chame window.revelarPagina() no evento de tempo do player. -->
-      <div class="player" id="player" role="button" tabindex="0" aria-label="Reproduzir vídeo">
-        <div>
-          <div class="player-ico" id="playerIco">▶</div>
-          <p class="player-txt">[INSERIR EMBED DA VSL — Panda, Vturb, YouTube ou Vimeo]</p>
-          <p class="player-timer" id="playerTimer">0:00</p>
-          <p class="player-aviso" id="playerAviso"></p>
-        </div>
-        <div class="player-barra"><div class="player-progresso" id="playerProgresso"></div></div>
+      <!-- VSL (YouTube). A página libera em VSL.REVELAR_EM segundos de vídeo
+           assistido — a lógica está no script do fim da página. -->
+      <div class="player" id="player">
+        <div id="vslYt"></div>
       </div>
     </div>
 
@@ -758,7 +742,6 @@ footer a{color:#E8D7E0}
    ============================================================================ */
 var VSL = {
   REVELAR_EM: 5,
-  INICIAR_AUTOMATICO: true,
   LEMBRAR_NA_SESSAO: true
 };
 
@@ -830,48 +813,42 @@ var VSL = {
     try { if (sessionStorage.getItem('vsl_revelada') === '1') revelar(); } catch (e) {}
   }
 
-  /* PLAYER DE TESTE — apagar junto com a <div id="player"> quando a VSL entrar. */
-  var player = document.getElementById('player');
-  if (player) {
-    var ico    = document.getElementById('playerIco');
-    var mostra = document.getElementById('playerTimer');
-    var barra  = document.getElementById('playerProgresso');
-    var aviso  = document.getElementById('playerAviso');
-    var seg = 0, timer = null;
+  /* VSL no YouTube (IFrame API). O script da API entra por aqui, e não no
+     <head>, porque só ele sabe em que segundo o vídeo está — e é isso que
+     libera a página. Sem autoplay: navegador bloqueia som automático, e VSL
+     muda não serve. Quem quer ver, aperta o play. */
+  var VIDEO_ID = 'kwNY_EZWFiU';
+  var yt = null, vigia = null;
 
-    function formata(s) {
-      var m = Math.floor(s / 60), r = s % 60;
-      return m + ':' + (r < 10 ? '0' : '') + r;
-    }
-    function pinta() {
-      mostra.textContent = formata(seg);
-      barra.style.width = Math.min(100, (seg / VSL.REVELAR_EM) * 100) + '%';
-      var faltam = revelado ? 0 : Math.max(0, VSL.REVELAR_EM - seg);
-      aviso.textContent = faltam
-        ? 'player de teste · libera em ' + faltam + 's'
-        : 'player de teste · página liberada';
-    }
-    function toca() {
-      if (timer) return;
-      timer = setInterval(function () {
-        seg++; pinta();
-        if (seg >= VSL.REVELAR_EM) { para(); revelar(); pinta(); }
-      }, 1000);
-      player.classList.add('rodando');
-      ico.textContent = '❚❚';
-    }
-    function para() {
-      clearInterval(timer); timer = null;
-      player.classList.remove('rodando');
-      ico.textContent = '▶';
-    }
-    player.addEventListener('click', function () { timer ? para() : toca(); });
-    player.addEventListener('keydown', function (e) {
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); timer ? para() : toca(); }
-    });
-    pinta();
-    if (VSL.INICIAR_AUTOMATICO && !revelado) toca();
+  function vigiaTempo() {
+    if (vigia) return;
+    vigia = setInterval(function () {
+      if (revelado) { clearInterval(vigia); vigia = null; return; }
+      var seg = 0;
+      try { seg = yt.getCurrentTime() || 0; } catch (e) {}
+      if (seg >= VSL.REVELAR_EM) revelar();
+    }, 500);
   }
+
+  window.onYouTubeIframeAPIReady = function () {
+    yt = new YT.Player('vslYt', {
+      host: 'https://www.youtube-nocookie.com',
+      videoId: VIDEO_ID,
+      playerVars: { rel: 0, playsinline: 1, modestbranding: 1 },
+      events: {
+        onStateChange: function (e) {
+          if (e.data === YT.PlayerState.PLAYING) vigiaTempo();
+          /* Acabou antes do segundo do pitch (REVELAR_EM maior que o vídeo):
+             libera mesmo assim, senão a oferta nunca aparece. */
+          if (e.data === YT.PlayerState.ENDED) revelar();
+        }
+      }
+    });
+  };
+
+  var apiYt = document.createElement('script');
+  apiYt.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(apiYt);
 
   function atualizaFlutuante() {
     if (!flutua || !hero || !rodape) return;
