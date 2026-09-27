@@ -12,6 +12,11 @@
       "permanent": false
     },
     {
+      "source": "/metodo-conecta-maes/:caminho+/",
+      "destination": "/perfil-pronto/:caminho+/",
+      "permanent": false
+    },
+    {
       "source": "/metodo-conecta-maes/:caminho*",
       "destination": "/perfil-pronto/:caminho*",
       "permanent": false
