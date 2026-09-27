@@ -1,25 +1,3 @@
 {
-  "trailingSlash": true,
-  "redirects": [
-    {
-      "source": "/metodo-conecta-maes/",
-      "destination": "/perfil-pronto/",
-      "permanent": false
-    },
-    {
-      "source": "/metodo-conecta-maes",
-      "destination": "/perfil-pronto/",
-      "permanent": false
-    },
-    {
-      "source": "/metodo-conecta-maes/:caminho+/",
-      "destination": "/perfil-pronto/:caminho+/",
-      "permanent": false
-    },
-    {
-      "source": "/metodo-conecta-maes/:caminho*",
-      "destination": "/perfil-pronto/:caminho*",
-      "permanent": false
-    }
-  ]
+  "trailingSlash": true
 }

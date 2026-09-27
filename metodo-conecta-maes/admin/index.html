@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Editar textos · PERFIL PRONTO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#E91E63;--pink-dk:#C2124E;--ink:#111014;--muted:#5E545A;--line:#E7DCE3;--paper:#FAF7F9;--ok:#12A150}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.55}
+.wrap{width:min(920px,94vw);margin-inline:auto;padding:24px 0 120px}
+
+/* ---------- login ---------- */
+.gate{min-height:100vh;display:grid;place-items:center;padding:20px}
+.gate form{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;width:min(360px,92vw);
+           box-shadow:0 14px 40px -24px rgba(0,0,0,.4)}
+.gate h1{font-size:1.25rem;margin-bottom:6px}
+.gate p{color:var(--muted);font-size:.88rem;margin-bottom:18px}
+label{display:block;font-size:.78rem;font-weight:700;margin-bottom:5px}
+input[type=text],input[type=password]{width:100%;padding:12px 13px;border:1.5px solid var(--line);
+  border-radius:10px;font-size:1rem;font-family:inherit;margin-bottom:14px;background:#fff}
+input:focus{outline:none;border-color:var(--pink)}
+.btn{background:var(--pink);color:#fff;border:0;border-radius:999px;padding:13px 26px;font-weight:700;
+     font-size:.95rem;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--pink-dk)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn-2{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-2:hover{background:#F3EEF1}
+.erro{color:#C0392B;font-size:.82rem;font-weight:600;margin-bottom:12px;display:none}
+
+/* ---------- topo ---------- */
+.topo{position:sticky;top:0;z-index:20;background:rgba(250,247,249,.96);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);padding:12px 0}
+.topo .wrap{padding:0;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.topo h1{font-size:1rem}
+.topo .acoes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.contador{font-size:.8rem;color:var(--muted)}
+.contador b{color:var(--pink)}
+
+/* ---------- campos ---------- */
+.aviso{background:#FFF6DC;border:1px solid #E8CE86;color:#6A5314;border-radius:12px;padding:14px 16px;
+       font-size:.85rem;margin:18px 0;line-height:1.6}
+.secao{margin-top:26px}
+.secao > h2{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);
+            margin-bottom:10px;font-weight:800}
+.campo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.campo.mudado{border-color:var(--ok);box-shadow:0 0 0 3px rgba(18,161,80,.1)}
+.campo .meta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}
+.campo .tag{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+            background:#F3EEF1;border-radius:5px;padding:3px 7px}
+.campo .status{font-size:.7rem;font-weight:700;color:var(--ok);display:none}
+.campo.mudado .status{display:inline}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:10px 12px;font-family:inherit;
+         font-size:.94rem;line-height:1.5;resize:vertical;min-height:46px;background:#FCFBFC}
+textarea:focus{outline:none;border-color:var(--pink);background:#fff}
+.dica{font-size:.72rem;color:var(--muted);margin-top:6px}
+.carregando{padding:40px 0;text-align:center;color:var(--muted)}
+
+/* ---------- barra de salvar ---------- */
+.barra{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+       padding:12px 0;box-shadow:0 -8px 24px -18px rgba(0,0,0,.5);z-index:30}
+.barra .wrap{padding:0;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.barra .txt{font-size:.82rem;color:var(--muted)}
+.oculto{display:none}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="gate" id="gate">
+  <form id="formLogin">
+    <h1>Editar textos</h1>
+    <p>PERFIL PRONTO · Método Conecta Mães</p>
+    <div class="erro" id="erroLogin">Usuário ou senha incorretos.</div>
+    <label for="u">Usuário</label>
+    <input type="text" id="u" autocomplete="username" autocapitalize="none" required>
+    <label for="s">Senha</label>
+    <input type="password" id="s" autocomplete="current-password" required>
+    <button class="btn" type="submit" style="width:100%">Entrar</button>
+  </form>
+</div>
+
+<!-- ============ EDITOR ============ -->
+<div class="oculto" id="editor">
+  <div class="topo">
+    <div class="wrap">
+      <h1>Textos da página de vendas</h1>
+      <div class="acoes">
+        <span class="contador" id="contador"></span>
+        <button class="btn btn-2" id="btnRecarregar" type="button">Descartar</button>
+        <a class="btn btn-2" href="../index.html" target="_blank" rel="noopener" style="text-decoration:none">Ver página</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="aviso">
+      Editar aqui <b>não publica</b>. Ao terminar, clique em <b>Gerar arquivo</b>: você baixa o
+      <code>index.html</code> já com os textos novos. Quem coloca no ar é quem sobe esse arquivo para o
+      repositório. Imagens, preços e layout não são alterados por esta tela.
+    </div>
+
+    <div id="campos"><div class="carregando">Carregando os textos da página…</div></div>
+  </div>
+
+  <div class="barra">
+    <div class="wrap">
+      <span class="txt" id="resumo">Nenhuma alteração ainda.</span>
+      <div class="acoes">
+        <button class="btn" id="btnGerar" type="button" disabled>Gerar arquivo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   Editor de textos da página de vendas.
+
+   Não altera a página em nada: ele busca o index.html, lê os textos, mostra
+   num formulário e devolve o mesmo arquivo com as trocas aplicadas. A troca é
+   feita por substituição exata no texto original, então nada mais no arquivo é
+   reescrito — as imagens em base64 e o restante do HTML ficam intactos.
+   ============================================================================ */
+
+var USUARIO = 'adm';
+var SENHA   = 'adm';
+var ARQUIVO = '../index.html';
+
+var original = '';     // conteúdo cru do index.html
+var campos = [];       // { chave, rotulo, htmlOriginal, ocorrencia, secao }
+
+/* ---------------------------------------------------------------- login */
+document.getElementById('formLogin').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var u = document.getElementById('u').value.trim();
+  var s = document.getElementById('s').value;
+  if (u === USUARIO && s === SENHA) {
+    try { sessionStorage.setItem('adm_ok', '1'); } catch (err) {}
+    entra();
+  } else {
+    document.getElementById('erroLogin').style.display = 'block';
+  }
+});
+
+try { if (sessionStorage.getItem('adm_ok') === '1') entra(); } catch (e) {}
+
+function entra() {
+  document.getElementById('gate').classList.add('oculto');
+  document.getElementById('editor').classList.remove('oculto');
+  carrega();
+}
+
+/* ------------------------------------------------------- leitura da página */
+function carrega() {
+  fetch(ARQUIVO + '?v=' + Date.now())
+    .then(function (r) { return r.text(); })
+    .then(function (txt) {
+      original = txt;
+      campos = extrai(txt);
+      desenha();
+    })
+    .catch(function (err) {
+      document.getElementById('campos').innerHTML =
+        '<div class="aviso">Não consegui ler o index.html: ' + err + '</div>';
+    });
+}
+
+// Só elementos "folha": os que contêm texto e nenhum bloco dentro.
+var BLOQUEIA = /<(div|section|ul|ol|details|img|iframe|footer|header|table)\b/i;
+// Nas listas com o ✓, o item inteiro traria o <span class="tick"> junto e
+// poluiria o campo. Nesses casos edita-se só o span do texto.
+var SELETOR = 'h1, h2, h3, p, summary, li, li span, a.btn, a.btn-sm, .eyebrow';
+
+function extrai(txt) {
+  var doc = new DOMParser().parseFromString(txt, 'text/html');
+  var achados = [];
+  var usados = {};       // conta ocorrências de um mesmo HTML
+  var secaoAtual = 'Topo da página';
+
+  // mapeia cada seção pelo comentário que a antecede
+  var marcas = [];
+  var it = doc.createNodeIterator(doc.body, NodeFilter.SHOW_COMMENT);
+  var c;
+  while ((c = it.nextNode())) {
+    var m = c.nodeValue.match(/=+\s*(\d+\.\s*[^=]+?)\s*=+/);
+    if (m) marcas.push({ no: c, titulo: m[1].trim() });
+  }
+
+  doc.querySelectorAll(SELETOR).forEach(function (el) {
+    var html = el.innerHTML.trim();
+    if (!html) return;
+    if (BLOQUEIA.test(html)) return;              // tem bloco dentro, não é folha
+    if (!/[A-Za-zÀ-ÿ0-9]/.test(html.replace(/<[^>]*>/g, ''))) return;  // sem texto
+    if (el.closest('#player')) return;            // player de teste
+    if (el.closest('script, style')) return;
+    if (el.classList.contains('tick')) return;    // o ✓ em si não é texto
+    // item de lista que tem ✓: o texto vem pelo span de dentro, não pelo <li>
+    if (el.tagName === 'LI' && el.querySelector('.tick')) return;
+
+    // qual seção
+    var titulo = secaoAtual;
+    for (var i = 0; i < marcas.length; i++) {
+      if (marcas[i].no.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+        titulo = marcas[i].titulo;
+      }
+    }
+
+    usados[html] = (usados[html] || 0) + 1;
+    achados.push({
+      chave: 'c' + achados.length,
+      rotulo: el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''),
+      htmlOriginal: html,
+      ocorrencia: usados[html],
+      secao: titulo
+    });
+  });
+
+  return achados;
+}
+
+/* ------------------------------------------------------------- formulário */
+function desenha() {
+  var alvo = document.getElementById('campos');
+  if (!campos.length) { alvo.innerHTML = '<div class="aviso">Nenhum texto editável encontrado.</div>'; return; }
+
+  var html = '', secao = null;
+  campos.forEach(function (c) {
+    if (c.secao !== secao) {
+      if (secao !== null) html += '</div>';
+      html += '<div class="secao"><h2>' + escapa(c.secao) + '</h2>';
+      secao = c.secao;
+    }
+    html += ''
+      + '<div class="campo" id="box-' + c.chave + '">'
+      +   '<div class="meta"><span class="tag">' + escapa(c.rotulo) + '</span>'
+      +   '<span class="status">alterado</span></div>'
+      +   '<textarea id="' + c.chave + '" rows="' + linhas(c.htmlOriginal) + '">' + escapa(c.htmlOriginal) + '</textarea>'
+      + '</div>';
+  });
+  html += '</div>';
+  alvo.innerHTML = html;
+
+  campos.forEach(function (c) {
+    var ta = document.getElementById(c.chave);
+    ta.addEventListener('input', function () {
+      document.getElementById('box-' + c.chave).classList.toggle('mudado', ta.value !== c.htmlOriginal);
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+      atualizaResumo();
+    });
+  });
+
+  document.getElementById('contador').innerHTML = '<b>' + campos.length + '</b> textos';
+  atualizaResumo();
+}
+
+function linhas(s) { return Math.min(8, Math.max(1, Math.ceil(s.length / 70))); }
+function escapa(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function alterados() {
+  return campos.filter(function (c) {
+    var ta = document.getElementById(c.chave);
+    return ta && ta.value !== c.htmlOriginal;
+  });
+}
+
+function atualizaResumo() {
+  var n = alterados().length;
+  document.getElementById('resumo').textContent = n
+    ? n + (n === 1 ? ' texto alterado' : ' textos alterados')
+    : 'Nenhuma alteração ainda.';
+  document.getElementById('btnGerar').disabled = n === 0;
+}
+
+/* ------------------------------------------------------------- gerar arquivo */
+document.getElementById('btnGerar').addEventListener('click', function () {
+  var mudados = alterados();
+  var saida = original;
+  var falhas = [];
+
+  mudados.forEach(function (c) {
+    var novo = document.getElementById(c.chave).value;
+    if (!trocaOcorrencia(c.htmlOriginal, novo, c.ocorrencia)) falhas.push(c.rotulo);
+  });
+
+  function trocaOcorrencia(velho, novo, n) {
+    var pos = -1;
+    for (var i = 0; i < n; i++) {
+      pos = saida.indexOf(velho, pos + 1);
+      if (pos < 0) return false;
+    }
+    saida = saida.slice(0, pos) + novo + saida.slice(pos + velho.length);
+    return true;
+  }
+
+  if (falhas.length) {
+    alert('Não consegui aplicar ' + falhas.length + ' troca(s): ' + falhas.join(', ') +
+          '.\nRecarregue a página do editor e tente de novo.');
+    return;
+  }
+
+  var blob = new Blob([saida], { type: 'text/html;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+
+  alert('Arquivo gerado com ' + mudados.length + ' alteração(ões).\n\n' +
+        'Agora suba este index.html para a pasta metodo-conecta-maes do repositório ' +
+        'para as mudanças entrarem no ar.');
+});
+
+document.getElementById('btnRecarregar').addEventListener('click', function () {
+  if (alterados().length && !confirm('Descartar as alterações não salvas?')) return;
+  document.getElementById('campos').innerHTML = '<div class="carregando">Recarregando…</div>';
+  carrega();
+});
+
+window.addEventListener('beforeunload', function (e) {
+  if (alterados().length) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
