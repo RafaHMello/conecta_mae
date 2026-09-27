@@ -1,3 +1,10 @@
 {
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/metodo-conecta-maes/:caminho*",
+      "destination": "/perfil-pronto/:caminho*",
+      "permanent": false
+    }
+  ]
 }
