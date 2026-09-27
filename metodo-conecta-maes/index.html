@@ -243,8 +243,8 @@ footer a{color:#E8D7E0}
 
     <div style="margin-top:24px">
       <!-- VSL (YouTube). Começa sozinha, muda; o toque no aviso liga o som e
-           volta pro início. A página libera em VSL.REVELAR_EM segundos de
-           vídeo COM SOM — a lógica está no script do fim da página. -->
+           volta pro início. Hoje a página já abre liberada: quem manda nisso é
+           VSL.EXIGIR_VIDEO, no script do fim da página. -->
       <div class="player" id="player">
         <div id="vslYt"></div>
         <div class="vsl-som" id="vslSom" role="button" tabindex="0" aria-label="Ativar o som do vídeo">
@@ -757,9 +757,21 @@ footer a{color:#E8D7E0}
 <script>
 /* ============================================================================
    REVEAL ATRASADO DA VSL
-   Troque REVELAR_EM para o segundo do pitch.
+
+   EXIGIR_VIDEO manda em tudo:
+     false -> a página abre liberada. O vídeo continua tocando, mas ninguém
+              precisa assistir (nem ligar o som) para ver a oferta.
+     true  -> volta a prender a página à VSL, liberando em REVELAR_EM segundos
+              de vídeo com som.
+
+   Está em false porque a trava prendia quem assistia mudo: o vídeo chegava ao
+   fim e a oferta nunca aparecia.
+
+   REVELAR_EM só tem efeito com EXIGIR_VIDEO em true. Troque para o segundo do
+   pitch.
    ============================================================================ */
 var VSL = {
+  EXIGIR_VIDEO: false,
   REVELAR_EM: 5,
   LEMBRAR_NA_SESSAO: true
 };
@@ -828,6 +840,9 @@ var VSL = {
   /* É por aqui que o player real libera a página. */
   window.revelarPagina = revelar;
 
+  /* Trava desligada: abre tudo já, sem esperar o vídeo. */
+  if (!VSL.EXIGIR_VIDEO) revelar();
+
   if (VSL.LEMBRAR_NA_SESSAO) {
     try { if (sessionStorage.getItem('vsl_revelada') === '1') revelar(); } catch (e) {}
   }
@@ -892,9 +907,10 @@ var VSL = {
         },
         onStateChange: function (e) {
           if (e.data === YT.PlayerState.PLAYING) vigiaTempo();
-          /* Acabou antes do segundo do pitch (REVELAR_EM maior que o vídeo):
-             libera mesmo assim, senão a oferta nunca aparece. */
-          if (e.data === YT.PlayerState.ENDED && somLigado()) revelar();
+          /* Acabou o vídeo: libera, com som ou sem. Exigir som aqui era o que
+             prendia quem assistia tudo no mudo — o vídeo terminava e a oferta
+             nunca aparecia. Vale também quando REVELAR_EM é maior que o vídeo. */
+          if (e.data === YT.PlayerState.ENDED) revelar();
         }
       }
     });
