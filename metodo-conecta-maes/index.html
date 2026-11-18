@@ -193,6 +193,24 @@ details p{margin-top:10px;color:var(--muted);font-size:.93rem}
 .float.on{transform:translateY(0)}
 .float .btn{padding:15px 20px;font-size:.96rem}
 
+/* Pedido do @ antes de abrir o WhatsApp da análise */
+.analise{border:0;padding:0;margin:auto;border-radius:var(--r);width:calc(100% - 32px);max-width:420px;
+         box-shadow:var(--shadow);background:var(--white);color:var(--ink)}
+.analise::backdrop{background:rgba(11,10,13,.6)}
+.analise form{padding:26px 22px 22px;position:relative}
+.analise h3{font-family:Fraunces,serif;font-size:1.25rem;line-height:1.2;margin:0 28px 8px 0}
+.analise p{font-size:.9rem;color:var(--muted);margin:0 0 16px}
+.analise-campo{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;
+               padding:0 14px;background:var(--blush)}
+.analise-campo:focus-within{border-color:var(--pink)}
+.analise-campo span{font-weight:700;color:var(--pink)}
+.analise-campo input{flex:1;border:0;background:transparent;font:500 1rem 'Inter',sans-serif;
+                     padding:14px 4px;outline:none;color:var(--ink);min-width:0}
+.analise-erro{color:var(--pink-dk);font-size:.82rem;margin-top:8px;min-height:1em}
+.analise .btn{margin-top:14px;width:100%;display:block;border:0;cursor:pointer}
+.analise-fechar{position:absolute;top:10px;right:12px;border:0;background:none;font-size:1.6rem;
+                line-height:1;color:var(--muted);cursor:pointer;padding:6px}
+
 footer{background:var(--night);color:#BFB2B9;padding:42px 0 30px;font-size:.84rem;text-align:center}
 footer img{width:190px;height:auto;margin:0 auto 18px}
 footer a{color:#E8D7E0}
@@ -226,7 +244,7 @@ footer a{color:#E8D7E0}
       <img src="assets/logo-topo.png" alt="PERFIL PRONTO — Método Conecta Mães"
            width="600" height="354" loading="eager">
     </a>
-    <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn-sm" target="_blank" rel="noopener">ANÁLISE GRATUITA</a>
+    <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn-sm js-analise" target="_blank" rel="noopener">ANÁLISE GRATUITA</a>
   </div>
 </header>
 
@@ -244,7 +262,7 @@ footer a{color:#E8D7E0}
     <h1>Eu TE ENCONTRO AO VIVO e faço o seu perfil para transformar uma visita em venda, de verdade.<br>Depois te entrego os Principais Conteúdos PRONTOS para publicar</h1>
 
     <div class="btn-wrap" style="margin-top:20px">
-      <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+      <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
     </div>
 
     <p class="lead" style="margin-top:16px">
@@ -267,7 +285,7 @@ footer a{color:#E8D7E0}
     </div>
 
     <div class="btn-wrap oculto" id="ctaHero">
-      <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+      <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
       <div class="btn-sec-wrap"><a href="#oferta" class="btn-sec">QUERO MEU PERFIL PRONTO</a></div>
       <p class="btn-note">🔒 Compra segura · Entrega em 10 dias úteis · 7 dias de garantia</p>
     </div>
@@ -423,7 +441,7 @@ footer a{color:#E8D7E0}
       </div>
     </div>
 
-    <div class="btn-wrap"><a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+    <div class="btn-wrap"><a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
       <div class="btn-sec-wrap"><a href="#oferta" class="btn-sec">QUERO MEU PERFIL PRONTO</a></div></div>
   </div>
 </section>
@@ -546,7 +564,7 @@ footer a{color:#E8D7E0}
 
     <p class="disclaimer center">Os depoimentos acima são relatos espontâneos e experiências individuais. Os resultados variam de acordo com a área de atuação, o momento do perfil e a dedicação de cada pessoa na aplicação do método. Este serviço não garante resultados financeiros nem qualquer retorno específico.</p>
 
-    <div class="btn-wrap"><a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+    <div class="btn-wrap"><a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
       <div class="btn-sec-wrap"><a href="#oferta" class="btn-sec">QUERO MEU PERFIL PRONTO</a></div></div>
   </div>
 </section>
@@ -650,7 +668,7 @@ footer a{color:#E8D7E0}
       <p class="btn-note">*parcelamento com acréscimo · Cartão, Pix ou boleto</p>
 
       <div class="btn-wrap">
-        <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+        <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
         <div class="btn-sec-wrap"><a href="https://pay.hotmart.com/P107117510G" class="btn-sec">QUERO MEU PERFIL PRONTO</a></div>
         <p class="btn-note">🔒 Compra segura · Checkout Hotmart</p>
       </div>
@@ -720,7 +738,7 @@ footer a{color:#E8D7E0}
         <p class="lead" style="margin-top:12px"><b style="color:var(--ink)">Próximo passo:</b> clique no botão, finalize a compra e você recebe o formulário para começarmos.</p>
 
         <div class="btn-wrap" style="text-align:left">
-          <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+          <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
           <div class="btn-sec-wrap" style="text-align:left"><a href="https://pay.hotmart.com/P107117510G" class="btn-sec">QUERO MEU PERFIL PRONTO</a></div>
           <p class="btn-note" style="text-align:left">🔒 Compra segura · Checkout Hotmart</p>
         </div>
@@ -765,8 +783,23 @@ footer a{color:#E8D7E0}
 
 </div><!-- /#conteudo -->
 
+<dialog class="analise" id="analise" aria-labelledby="analiseTitulo">
+  <form id="analiseForm" novalidate>
+    <button type="button" class="analise-fechar" id="analiseFechar" aria-label="Fechar">×</button>
+    <h3 id="analiseTitulo">Qual é o @ do seu Instagram?</h3>
+    <p>É ele que a gente vai analisar. Depois é só enviar a mensagem no WhatsApp.</p>
+    <label class="analise-campo">
+      <span>@</span>
+      <input type="text" id="analiseArroba" name="arroba" placeholder="seuperfil"
+             autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="text">
+    </label>
+    <div class="analise-erro" id="analiseErro" role="alert"></div>
+    <button type="submit" class="btn">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</button>
+  </form>
+</dialog>
+
 <div class="float" id="floatCta">
-  <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
+  <a href="https://wa.me/5583999310487?text=Oi!%20Quero%20minha%20an%C3%A1lise%20de%20perfil%20gratuita" class="btn js-analise" target="_blank" rel="noopener">QUERO MINHA ANÁLISE DE PERFIL GRATUITA</a>
 </div>
 
 <script>
@@ -945,6 +978,58 @@ var VSL = {
   window.addEventListener('scroll', atualizaFlutuante, { passive: true });
   window.addEventListener('resize', atualizaFlutuante);
   atualizaFlutuante();
+
+  /* Análise gratuita: antes de abrir o WhatsApp, pede o @ do Instagram e põe
+     na mensagem. O href dos botões continua sendo o link sem o @ -- é o que
+     abre se o script falhar ou o navegador não tiver <dialog>. */
+  var WHATS_ANALISE = '5583999310487';
+  var janela = document.getElementById('analise');
+  var campo = document.getElementById('analiseArroba');
+  var erro = document.getElementById('analiseErro');
+
+  /* Aceita "@perfil", "perfil" ou o link do perfil colado inteiro. */
+  function limpaArroba(v) {
+    v = (v || '').trim();
+    var link = v.match(/instagram\.com\/([^/?#\s]+)/i);
+    if (link) v = link[1];
+    return v.replace(/^@+/, '').replace(/\s+/g, '');
+  }
+
+  if (janela && typeof janela.showModal === 'function') {
+    document.querySelectorAll('.js-analise').forEach(function (botao) {
+      botao.addEventListener('click', function (e) {
+        e.preventDefault();
+        erro.textContent = '';
+        janela.showModal();
+        campo.focus();
+      });
+    });
+
+    document.getElementById('analiseFechar').addEventListener('click', function () {
+      janela.close();
+    });
+    /* Clique fora da caixa fecha. */
+    janela.addEventListener('click', function (e) {
+      if (e.target === janela) janela.close();
+    });
+
+    document.getElementById('analiseForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var arroba = limpaArroba(campo.value);
+      if (!/^[A-Za-z0-9._]{1,30}$/.test(arroba)) {
+        erro.textContent = arroba ? 'Confira o @: só letras, números, ponto e _.' : 'Digite o @ do seu Instagram.';
+        campo.focus();
+        return;
+      }
+      var texto = 'Oi! Quero minha análise de perfil gratuita. Meu Instagram é @' + arroba;
+      var url = 'https://wa.me/' + WHATS_ANALISE + '?text=' + encodeURIComponent(texto);
+      janela.close();
+      /* Sem 'noopener' no window.open: com ele o retorno é sempre null e não
+         daria para saber se o navegador bloqueou a aba. */
+      var aba = window.open(url, '_blank');
+      if (aba) aba.opener = null; else location.href = url;
+    });
+  }
 
   /* Depoimento em vídeo: a capa vira iframe no clique.
      youtube-nocookie e autoplay=1 porque quem clicou já pediu para ver. */
